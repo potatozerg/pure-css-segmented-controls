@@ -1,0 +1,129 @@
+@import "compass/css3";
+
+$control-count : 6;
+$transition-timing-function : cubic-bezier(0.445, 0.050, 0.550, 0.950);
+$transition-duration : .7s;
+
+.segmented-control {
+  width: 100%;
+  position: relative;
+  margin: 20px 5px 10px 5px;  
+  min-width: 100px;
+  display: inline-block;
+  border: 1px solid currentColor;
+
+  @include border-radius(2px);
+  @include box-sizing(border-box);
+  @include user-select(none);
+  @include transition-duration($transition-duration);
+  @include transition-timing-function($transition-timing-function);
+
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+  > input {
+    position: absolute;
+    left: -10000px;
+
+    &[type='checkbox'] ~ label {
+        @include transition-duration(0);
+    }
+
+    @for $i from 1 through $control-count {
+      &:disabled:nth-child(#{$i}) ~ label:nth-of-type(#{$i}) {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      &:nth-child(#{$i}):checked {
+        ~ label:nth-of-type(#{$i}) {
+          &:after, &:before { 
+            opacity: 1; 
+          }
+        }
+
+        @for $j from $i through $control-count {
+          ~ label:first-of-type:nth-last-of-type(#{$j}) {
+            &:after, &:before, & ~ label:after, & ~ label:before { 
+              left: percentage((($i - 1) / 10) / ($j / 10)); 
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > label {
+    display: inline-block;
+    padding: 12px 10px;
+    cursor: pointer;
+    float: left;
+    vertical-align: text-bottom;
+
+    @include border-radius(1px);
+    @include transition-duration(inherit);
+    @include transition-timing-function(inherit);
+
+    &.italic       { font-style: italic; }
+    &.bold         { font-weight: bold; }
+    &.underline    { text-decoration: underline; }
+    &.line-through { text-decoration: line-through; }
+
+    &:after {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #FFF;
+      opacity: 0;
+      padding: inherit;
+      pointer-events: none;
+      content: attr(data-value);
+      text-align: center;
+      z-index: 1000;
+      font-style: inherit;
+      text-decoration: inherit;
+      font-weight: inherit;
+      width: 100%;
+
+      @include backface-visibility(hidden);
+      @include transition-property(opacity, left);
+      @include transition-duration(inherit);
+      @include transition-timing-function(inherit);
+    }
+
+    &, &:after {
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      @include box-sizing(border-box);
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      color: inherit;
+      opacity: 0;
+      pointer-events: none;
+      background: currentColor;
+
+      @include transition-property(left);
+      @include transition-duration(inherit);
+      @include transition-timing-function(inherit);
+    }
+
+    @for $i from 1 through $control-count {
+      &:first-of-type:nth-last-of-type(#{$i}) {
+        &, & ~ label {
+          &, &:after, &:before {
+            width: percentage(1/$i);
+          }
+        }
+      }
+    }
+  }
+}
