@@ -5,7 +5,6 @@ $transition-timing-function : cubic-bezier(0.445, 0.050, 0.550, 0.950);
 $transition-duration : .7s;
 
 .segmented-control {
-  width: 100%;
   position: relative;
   margin: 20px 5px 10px 5px;  
   min-width: 100px;
@@ -25,7 +24,7 @@ $transition-duration : .7s;
     left: -10000px;
 
     &[type='checkbox'] ~ label {
-        @include transition-duration(0);
+      @include transition-duration(0);
     }
 
     @for $i from 1 through $control-count {
