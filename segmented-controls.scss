@@ -1,15 +1,18 @@
 @import "compass/css3";
 
-$control-count : 6;
-$transition-timing-function : cubic-bezier(0.445, 0.050, 0.550, 0.950);
-$transition-duration : .7s;
+$control-count: 6;
+$transition-timing-function: cubic-bezier(0.445, 0.050, 0.550, 0.950);
+$transition-duration: .7s;
+$color-active: white;
 
 .segmented-control {
-  position: relative;
-  margin: 20px 5px 10px 5px;  
-  min-width: 100px;
+  position: relative; 
   display: inline-block;
   border: 1px solid currentColor;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  overflow: hidden;
 
   @include border-radius(2px);
   @include box-sizing(border-box);
@@ -22,9 +25,14 @@ $transition-duration : .7s;
   > input {
     position: absolute;
     left: -10000px;
+    opacity: 0;
 
     &[type='checkbox'] ~ label {
       @include transition-duration(0);
+
+      &:before {
+        opacity: 0;
+      }
     }
 
     @for $i from 1 through $control-count {
@@ -53,43 +61,44 @@ $transition-duration : .7s;
 
   > label {
     display: inline-block;
-    padding: 12px 10px;
+    padding: 0 .71em;
     cursor: pointer;
     float: left;
-    vertical-align: text-bottom;
+    line-height: 3em;
+    font-style: inherit;
+    font-weight: inherit;
+    text-decoration: inherit;
 
-    @include border-radius(1px);
+    @include transition-property(none);
     @include transition-duration(inherit);
     @include transition-timing-function(inherit);
 
-    &.italic       { font-style: italic; }
-    &.bold         { font-weight: bold; }
-    &.underline    { text-decoration: underline; }
-    &.line-through { text-decoration: line-through; }
-
-    &:after {
+    &:before, &:after {
       position: absolute;
       left: 0;
       top: 0;
-      color: #FFF;
-      opacity: 0;
-      padding: inherit;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
+    }
+
+    &:after {
+      color: $color-active;
       content: attr(data-value);
       text-align: center;
-      z-index: 1000;
+      padding: inherit;
+      z-index: 10;
       font-style: inherit;
       text-decoration: inherit;
       font-weight: inherit;
-      width: 100%;
+      opacity: 0;
 
-      @include backface-visibility(hidden);
       @include transition-property(opacity, left);
       @include transition-duration(inherit);
       @include transition-timing-function(inherit);
     }
 
-    &, &:after {
+    &:after, & {
       text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -100,14 +109,7 @@ $transition-duration : .7s;
 
     &:before {
       content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
       color: inherit;
-      opacity: 0;
-      pointer-events: none;
       background: currentColor;
 
       @include transition-property(left);
@@ -125,4 +127,9 @@ $transition-duration : .7s;
       }
     }
   }
+
+  &.italic, .italic             { font-style: italic; }
+  &.bold, .bold                 { font-weight: bold; }
+  &.underline, .underline       { text-decoration: underline; }
+  &.line-through, .line-through { text-decoration: line-through; }
 }
